@@ -6,7 +6,8 @@ import os
 import hashlib
 
 
-def decode_image((url, face_data)):
+def decode_image(arg):
+    (url, face_data) = arg
     results_path = './images_test'
     sha_res = hashlib.sha1(url).hexdigest() + '.jpg'
     fname = os.path.join(results_path, sha_res)

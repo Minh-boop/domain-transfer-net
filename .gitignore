@@ -1,3 +1,7 @@
 ./datasets/*.zip
 
 dtn-venv/
+
+datasets/emoji_data/
+
+__pycache__/

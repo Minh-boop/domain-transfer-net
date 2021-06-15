@@ -93,7 +93,6 @@ class FaceTest(BaseTest):
             self.model['D'] = self.model['D'].cuda()
             
         self.prepare_openface('./pretrained_model/openface.pth', self.use_gpu)
-#         self.prepare_sphereface('./pretrained_model/sphere20a_20171020.pth', self.use_gpu)
         
         self.up96 = nn.Upsample(size=(96,96), mode='bilinear')
         
@@ -125,7 +124,7 @@ class FaceTest(BaseTest):
         
         self.model['F'] = f_model
         if use_gpu:
-            self.model['F'] = sefl.model['F'].cuda()
+            self.model['F'] = self.model['F'].cuda()
         
         
     def create_loss_function(self):       

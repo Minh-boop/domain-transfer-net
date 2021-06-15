@@ -6,10 +6,17 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 import torch.backends.cudnn as cudnn
 from collections import OrderedDict
+
+"""
 try:
     from . SpatialCrossMapLRN_model import SpatialCrossMapLRN
 except:
     from SpatialCrossMapLRN_model import SpatialCrossMapLRN
+"""
+
+# versuchen wir ds hier von https://github.com/akmtn/pytorch-siggraph2017-inpainting/issues/2
+from torch.nn.modules import CrossMapLRN2d
+
 import os
 import time
 
@@ -44,7 +51,8 @@ def BatchNorm(dim):
     return l
 
 def CrossMapLRN(size, alpha, beta, k=1.0, gpuDevice=0):
-    lrn = SpatialCrossMapLRN(size, alpha, beta, k, gpuDevice=gpuDevice)
+    # hier geändert
+    lrn = CrossMapLRN2d(size, alpha, beta, k, gpuDevice=gpuDevice)
     n = Lambda( lambda x,lrn=lrn: Variable(lrn.forward(x.data).cuda(gpuDevice)) if x.data.is_cuda else Variable(lrn.forward(x.data)) )
     return n
 

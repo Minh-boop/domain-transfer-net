@@ -45,9 +45,9 @@ class FaceTestSphere(BaseTest):
         s_train_set = data.MSCeleb1MDataset('./datasets/ms-celeb-1m/data/', 'train', transform=msface_transform)
         self.s_train_loader = torch.utils.data.DataLoader(s_train_set, batch_size=128, shuffle=True, num_workers=8)
         
-#         s_train_set = data.CelebADataset('./datasets/celeba/img_align_celeba/', './datasets/celeba/celeba_info', \
-#                                              'train', transform=msface_transform)
-#         self.s_train_loader = torch.utils.data.DataLoader(s_train_set, batch_size=128, shuffle=True, num_workers=8)
+        #         s_train_set = data.CelebADataset('./datasets/celeba/img_align_celeba/', './datasets/celeba/celeba_info', \
+        #                                              'train', transform=msface_transform)
+        #         self.s_train_loader = torch.utils.data.DataLoader(s_train_set, batch_size=128, shuffle=True, num_workers=8)
         
         t_train_set = data.EmojiDataset('./datasets/emoji_data/', 0, 1000000, transform=emoji_transform)
         self.t_train_loader = torch.utils.data.DataLoader(t_train_set, batch_size=128, shuffle=True, num_workers=8)
@@ -96,8 +96,7 @@ class FaceTestSphere(BaseTest):
         if self.use_gpu:
             self.model['G'] = self.model['G'].cuda()
             self.model['D'] = self.model['D'].cuda()
-            
-#         self.prepare_openface('./pretrained_model/openface.pth', self.use_gpu)
+        
         self.prepare_sphereface('./pretrained_model/sphere20a_20171020.pth', self.use_gpu)
         
         self.up96 = nn.Upsample(size=(96,96), mode='bilinear')
@@ -111,16 +110,6 @@ class FaceTestSphere(BaseTest):
         print(grad_input)
         print('out')
         print(grad_output)
-            
-    def prepare_openface(self, pretrained_params_file, use_gpu=True):
-        f_model = OpenFace(use_gpu)
-        f_model.load_state_dict(torch.load(pretrained_params_file))
-        
-        # don't want to update params in pretrained model
-        for param in f_model.parameters():
-            param.requires_grad = False
-        
-        self.model['F'] = f_model
         
     def prepare_sphereface(self, pretrained_params_file, use_gpu=True):
         f_model = sphere20a(feature=True)
@@ -531,12 +520,12 @@ class FaceTestSphere(BaseTest):
                     self.seeResultsTgt(t_data, s_G)
 
         
-                    d_src_loss = 0 if self.d_train_src_sum is 0 else self.d_train_src_runloss / self.d_train_src_sum
-                    g_src_loss = 0 if self.g_train_src_sum is 0 else self.g_train_src_runloss / self.g_train_src_sum
-                    lconst_src_loss = 0 if self.g_train_src_sum is 0 else self.lconst_src_runloss / self.g_train_src_sum
-                    d_trg_loss = 0 if self.d_train_trg_sum is 0 else self.d_train_trg_runloss / self.d_train_trg_sum
-                    d_g_trg_loss = 0 if self.d_g_train_trg_sum is 0 else self.d_g_train_trg_runloss / self.d_g_train_trg_sum
-                    g_trg_loss = 0 if self.g_train_trg_sum is 0 else self.g_train_trg_runloss / self.g_train_trg_sum
+                    d_src_loss = 0 if self.d_train_src_sum == 0 else self.d_train_src_runloss / self.d_train_src_sum
+                    g_src_loss = 0 if self.g_train_src_sum == 0 else self.g_train_src_runloss / self.g_train_src_sum
+                    lconst_src_loss = 0 if self.g_train_src_sum == 0 else self.lconst_src_runloss / self.g_train_src_sum
+                    d_trg_loss = 0 if self.d_train_trg_sum == 0 else self.d_train_trg_runloss / self.d_train_trg_sum
+                    d_g_trg_loss = 0 if self.d_g_train_trg_sum == 0 else self.d_g_train_trg_runloss / self.d_g_train_trg_sum
+                    g_trg_loss = 0 if self.g_train_trg_sum == 0 else self.g_train_trg_runloss / self.g_train_trg_sum
                     d_train_src_loss.append(d_src_loss)                    
                     g_train_src_loss.append(g_src_loss)
                     lconst_train_src_loss.append(lconst_src_loss)
